@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Rubuu 🎀</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Montserrat:wght@400;500;600&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- GLOBAL --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body, html {
+            width: 100%;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #ffe6eb; /* Baby Pink Background */
+            color: #5a3a41;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- AESTHETIC BACKGROUND ELEMENTS --- */
+        .bg-elements {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .cute-icon {
+            position: absolute;
+            font-size: clamp(2rem, 5vw, 4rem);
+            opacity: 0.15; /* Low opacity */
+            animation: float 10s infinite ease-in-out alternate;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-30px) rotate(15deg); }
+        }
+
+        /* Positioning the cute elements */
+        .cute-icon:nth-child(1) { top: 10%; left: 10%; }
+        .cute-icon:nth-child(2) { top: 20%; right: 15%; animation-delay: 1s; }
+        .cute-icon:nth-child(3) { top: 50%; left: 5%; animation-delay: 2s; }
+        .cute-icon:nth-child(4) { top: 70%; right: 10%; animation-delay: 3s; }
+        .cute-icon:nth-child(5) { top: 85%; left: 20%; animation-delay: 4s; }
+
+        /* --- SECTION 1: THE GIFT BOX --- */
+        .section {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        .gift-wrapper {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gift-wrapper:hover { transform: scale(1.05); }
+
+        .gift-box {
+            width: 150px; height: 120px;
+            background: #ffb3c6;
+            position: relative;
+            border-radius: 5px;
+            box-shadow: 0 10px 20px rgba(255, 179, 198, 0.4);
+        }
+
+        .gift-box::before { /* Vertical Ribbon */
+            content: ''; position: absolute;
+            top: 0; left: 50%; transform: translateX(-50%);
+            width: 30px; height: 100%;
+            background: #ff4d6d;
+        }
+
+        .gift-lid {
+            width: 170px; height: 40px;
+            background: #ffb3c6;
+            position: absolute;
+            top: -20px; left: -10px;
+            border-radius: 5px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 2;
+        }
+
+        .gift-lid::before { /* Lid Ribbon */
+            content: ''; position: absolute;
+            top: 0; left: 50%; transform: translateX(-50%);
+            width: 30px; height: 100%; background: #ff4d6d;
+        }
+
+        .gift-lid::after { /* Bow */
+            content: '🎀'; position: absolute;
+            top: -35px; left: 50%; transform: translateX(-50%);
+            font-size: 40px;
+        }
+
+        /* Animation when gift opens */
+        .gift-wrapper.open .gift-lid {
+            transform: translateY(-80px) rotate(15deg);
+            opacity: 0;
+        }
+
+        .gift-text {
+            margin-top: 30px;
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: #d84373;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* --- THE VIDEO OVERLAY --- */
+        #video-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 230, 235, 0.95);
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #video-modal.show { opacity: 1; pointer-events: auto; }
+
+        .video-container {
+            width: 90%; max-width: 400px; /* Vertical mobile edit size */
+            background: #fff;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(255, 179, 198, 0.6);
+            transform: translateY(50px) scale(0.9);
+            transition: all 0.5s ease;
+            position: relative;
+        }
+
+        #video-modal.show .video-container { transform: translateY(0) scale(1); }
+
+        video {
+            width: 100%;
+            border-radius: 10px;
+            background: #000;
+        }
+
+        .close-btn {
+            margin-top: 20px;
+            padding: 10px 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            background: #ff4d6d;
+            color: white; border: none; border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+        }
+
+        /* Scroll Arrow Indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 20px; left: 50%; transform: translateX(-50%);
+            font-size: 2rem;
+            color: #ff4d6d;
+            animation: bounce 2s infinite;
+            display: none; z-index: 20;
+        }
+
+        /* --- SECTION 2: CHILDHOOD PHOTOS --- */
+        .story-container {
+            width: 90%; max-width: 600px;
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .polaroid {
+            background: #fff;
+            padding: 15px 15px 40px 15px;
+            border-radius: 5px;
+            box-shadow: 0 10px 20px rgba(255, 179, 198, 0.5);
+            display: inline-block;
+            margin-bottom: 20px;
+            width: clamp(250px, 80vw, 350px);
+        }
+
+        .polaroid img {
+            width: 100%; aspect-ratio: 1/1; object-fit: cover;
+            border-radius: 3px;
+        }
+
+        .caption {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(1.8rem, 4vw, 2.2rem);
+            color: #d84373;
+            margin-top: 0px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* --- SECTION 3: HALF & HALF HEART FRAME --- */
+        .heart-frame-wrapper {
+            margin-top: 100px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .heart-frame-wrapper:hover { transform: scale(1.05); }
+
+        .heart-mask {
+            width: clamp(250px, 80vw, 350px);
+            height: clamp(250px, 80vw, 350px);
+            /* Creating a heart shape mask using CSS clip-path */
+            clip-path: path('M 50 25 C 50 0, 0 0, 0 35 C 0 65, 50 95, 50 100 C 50 95, 100 65, 100 35 C 100 0, 50 0, 50 25 Z');
+            /* Standardizing the path to stretch */
+            clip-path: polygon(50% 100%, 15% 65%, 0% 35%, 15% 10%, 35% 10%, 50% 25%, 65% 10%, 85% 10%, 100% 35%, 85% 65%);
+            /* Better cross-browser heart mask */
+            -webkit-mask-image: radial-gradient(circle at 60% 65%, red 64%, transparent 65%), radial-gradient(circle at 40% 65%, red 64%, transparent 65%), linear-gradient(to bottom left, transparent 43%, red 43%), linear-gradient(to bottom right, transparent 43%, red 43%);
+            
+            /* Fallback simpler approach for guaranteed results across all browsers */
+            background: #fff;
+            position: relative;
+            display: flex;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(255, 179, 198, 0.8);
+            border: 8px solid #ff4d6d; /* Hand heart vibe */
+        }
+        
+        /* CSS Heart Override for absolute shape */
+        .heart-css-shape {
+            width: clamp(250px, 80vw, 350px);
+            aspect-ratio: 1;
+            position: relative;
+            display: flex;
+            overflow: hidden;
+            /* Heart clip-path */
+            clip-path: path("M175,340 C60,230 0,160 0,90 C0,40 40,0 90,0 C125,0 155,20 175,50 C195,20 225,0 260,0 C310,0 350,40 350,90 C350,160 290,230 175,340 Z");
+            background: white;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.4);
+            transform: scale(0.9);
+        }
+
+        .half-img {
+            width: 50%; height: 100%;
+            object-fit: cover;
+        }
+
+        .click-heart-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem; color: #ff4d6d;
+            margin-top: 15px;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        /* --- SECTION 4: THE BOOK MODAL --- */
+        #book-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 230, 235, 0.95);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 200; opacity: 0; pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        #book-modal.show { opacity: 1; pointer-events: auto; }
+
+        .book {
+            display: flex;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15), inset 0 0 20px rgba(255,179,198,0.3);
+            width: 95%; max-width: 800px;
+            height: clamp(400px, 75vh, 600px);
+            transform: scale(0.8);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        #book-modal.show .book { transform: scale(1); }
+
+        /* Mobile Adjustments for Book */
+        @media (max-width: 768px) {
+            .book { flex-direction: column; overflow-y: auto; height: 85vh; }
+            .book-page { border-right: none !important; border-bottom: 2px dashed #ffb3c6; }
+            .heart-css-shape { width: 280px; transform: scale(0.8); } /* Fix for small screens */
+        }
+
+        .book-page {
+            flex: 1;
+            padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+            border-right: 2px dashed #ffb3c6; /* Book spine fold */
+        }
+        .book-page:last-child { border: none; }
+
+        .page-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: #ff4d6d; margin-bottom: 15px;
+            font-weight: 700; text-align: center;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px; width: 100%; height: 100%;
+        }
+
+        .photo-grid img {
+            width: 100%; height: 100%; aspect-ratio: 1;
+            object-fit: cover; border-radius: 5px;
+            border: 3px solid #ffe6eb;
+        }
+
+        .close-book-btn {
+            position: absolute;
+            top: -50px; right: 0;
+            background: #ff4d6d; color: #fff;
+            border: none; padding: 10px 20px; border-radius: 20px;
+            font-family: 'Montserrat', sans-serif; cursor: pointer;
+            box-shadow: 0 5px 10px rgba(255, 77, 109, 0.3);
+        }
+
+        /* --- FALLING ROSES ANIMATION --- */
+        .falling-rose {
+            position: fixed;
+            top: -50px;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            z-index: 9999;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AESTHETIC BACKGROUND -->
+    <div class="bg-elements">
+        <div class="cute-icon">🧸</div>
+        <div class="cute-icon">🤍</div>
+        <div class="cute-icon">🎀</div>
+        <div class="cute-icon">🌸</div>
+        <div class="cute-icon">💖</div>
+    </div>
+
+    <!-- SECTION 1: GIFT BOX -->
+    <div class="section" id="sec-gift">
+        <div class="gift-wrapper" id="giftBox">
+            <div class="gift-lid"></div>
+            <div class="gift-box"></div>
+        </div>
+        <div class="gift-text">Tap the gift Rubuu 🎀</div>
+    </div>
+
+    <!-- VIDEO MODAL -->
+    <div id="video-modal">
+        <div class="video-container">
+            <video id="herEdit" controls playsinline>
+                <source src="heredit.mp4" type="video/mp4">
+                Your browser doesn't support video.
+            </video>
+            <button class="close-btn" id="closeVideoBtn">Close Edit ✨</button>
+        </div>
+    </div>
+
+    <div class="scroll-indicator" id="scrollIndicator">↓ Scroll Down ↓</div>
+
+    <!-- SECTION 2: CHILDHOOD PHOTOS -->
+    <div class="section" id="sec-story1">
+        <div class="story-container">
+            <div class="polaroid" style="transform: rotate(-3deg);">
+                <img src="childhoodme.jpeg" alt="My Childhood" onerror="this.src='https://via.placeholder.com/300/ffb3c6/fff?text=Vanuu+Child'">
+                <div class="caption">someone in childhood who is yours</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="sec-story2">
+        <div class="story-container">
+            <div class="polaroid" style="transform: rotate(3deg);">
+                <img src="childhoodher.jpeg" alt="Her Childhood" onerror="this.src='https://via.placeholder.com/300/ffb3c6/fff?text=Rubuu+Child'">
+                <div class="caption">someone who is mine</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 3: HALF & HALF HEART -->
+    <div class="section" id="sec-heart">
+        <div class="heart-frame-wrapper" id="heartFrameBtn">
+            <!-- Using a standard flex container with rounded edges as a fallback, masked by a pseudo-heart structure -->
+            <div style="width: clamp(250px, 70vw, 320px); height: clamp(250px, 70vw, 320px); border-radius: 50%; overflow: hidden; display: flex; box-shadow: 0 10px 30px rgba(255, 77, 109, 0.4); border: 8px solid #ff4d6d;">
+                <img src="childhoodme.jpeg" class="half-img" onerror="this.style.background='#ffb3c6'">
+                <img src="childhoodher.jpeg" class="half-img" onerror="this.style.background='#ff8fab'">
+            </div>
+            <div class="click-heart-text">Tap Our Heart 🤍</div>
+        </div>
+    </div>
+
+    <!-- SECTION 4: THE BOOK MODAL -->
+    <div id="book-modal">
+        <div class="book">
+            <button class="close-book-btn" id="closeBookBtn">Close Book 🎀</button>
+            
+            <!-- Page 1: RUBUUU -->
+            <div class="book-page">
+                <div class="page-title">RUBUUU</div>
+                <div class="photo-grid">
+                    <img src="her1.jpeg" onerror="this.src='https://via.placeholder.com/200/ffe6eb/d84373?text=Pic1'">
+                    <img src="her2.jpg" onerror="this.src='https://via.placeholder.com/200/ffe6eb/d84373?text=Pic2'">
+                    <img src="her3.jpg" onerror="this.src='https://via.placeholder.com/200/ffe6eb/d84373?text=Pic3'">
+                    <img src="her4.jpg" onerror="this.src='https://via.placeholder.com/200/ffe6eb/d84373?text=Pic4'">
+                </div>
+            </div>
+
+            <!-- Page 2: VANUUU -->
+            <div class="book-page">
+                <div class="page-title">VANUUU</div>
+                <div class="photo-grid">
+                    <img src="me1.jpeg" onerror="this.src='https://via.placeholder.com/200/ffe6eb/d84373?text=Pic1'">
+                    <img src="me2.jpeg" onerror="this.src='https://via.placeholder.com/200/ffe6eb/d84373?text=Pic2'">
+                    <img src="me3.jpeg" onerror="this.src='https://via.placeholder.com/200/ffe6eb/d84373?text=Pic3'">
+                    <img src="me4.jpeg" onerror="this.src='https://via.placeholder.com/200/ffe6eb/d84373?text=Pic4'">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // 1. Gift Box Logic
+        const giftBox = document.getElementById('giftBox');
+        const videoModal = document.getElementById('video-modal');
+        const videoPlayer = document.getElementById('herEdit');
+        const closeVideoBtn = document.getElementById('closeVideoBtn');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+
+        // Lock scrolling initially
+        document.body.style.overflow = 'hidden';
+
+        giftBox.addEventListener('click', () => {
+            giftBox.classList.add('open');
+            setTimeout(() => {
+                videoModal.classList.add('show');
+                videoPlayer.play();
+            }, 800);
+        });
+
+        closeVideoBtn.addEventListener('click', () => {
+            videoPlayer.pause();
+            videoModal.classList.remove('show');
+            document.body.style.overflow = 'auto'; // Unlock scroll
+            scrollIndicator.style.display = 'block'; // Show arrow
+        });
+
+        // Hide scroll indicator when user actually scrolls
+        window.addEventListener('scroll', () => {
+            if(window.scrollY > 100) {
+                scrollIndicator.style.display = 'none';
+            }
+        });
+
+        // 2. Book Modal Logic
+        const heartFrameBtn = document.getElementById('heartFrameBtn');
+        const bookModal = document.getElementById('book-modal');
+        const closeBookBtn = document.getElementById('closeBookBtn');
+
+        heartFrameBtn.addEventListener('click', () => {
+            bookModal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Lock scroll while reading
+        });
+
+        closeBookBtn.addEventListener('click', () => {
+            bookModal.classList.remove('show');
+            document.body.style.overflow = 'auto'; // Unlock scroll
+            triggerRoses(); // Trigger final animation
+        });
+
+        // 3. Falling Roses Animation Logic
+        function triggerRoses() {
+            const numRoses = 50; // How many roses to drop
+            
+            for (let i = 0; i < numRoses; i++) {
+                setTimeout(() => {
+                    const rose = document.createElement('div');
+                    rose.classList.add('falling-rose');
+                    rose.innerText = '🌹';
+                    
+                    // Random horizontal position
+                    rose.style.left = Math.random() * 100 + 'vw';
+                    
+                    // Random fall duration (between 3s and 6s)
+                    const fallDuration = Math.random() * 3 + 3;
+                    rose.style.animationDuration = fallDuration + 's';
+                    
+                    document.body.appendChild(rose);
+                    
+                    // Remove rose element after it falls to clean up DOM
+                    setTimeout(() => {
+                        rose.remove();
+                    }, fallDuration * 1000);
+                    
+                }, i * 150); // Stagger the drops
+            }
+        }
+    </script>
+</body>
+</html>
